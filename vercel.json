@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/webhook.go": {
-      "runtime": "go@1.23"
+      "runtime": "@vercel/go"
     }
   },
   "routes": [
