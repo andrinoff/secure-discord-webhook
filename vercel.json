@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/webhook.go": {
+      "runtime": "go@1.22"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/webhook",
+      "dest": "/api/webhook.go"
+    }
+  ]
+}
