@@ -1,3 +1,5 @@
+// api/webhook.go (Corrected for CORS)
+
 package handler
 
 import (
@@ -15,8 +17,24 @@ type DiscordWebhookPayload struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	// --- NEW CODE BLOCK TO HANDLE CORS ---
+	// This allows the browser/fetch client to make a "preflight" OPTIONS request
+	// to see which methods and headers are allowed.
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	// If this is the preflight OPTIONS request, we can stop here.
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	// --- END OF NEW CODE BLOCK ---
+
+
+	// We still only want to process POST requests for the actual logic.
 	if r.Method != http.MethodPost {
-		http.Error(w, "Only POST method is accepted", http.StatusMethodNotAllowed)
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
