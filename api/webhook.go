@@ -1,4 +1,4 @@
-// api/webhook.go (Corrected for CORS)
+// api/webhook.go (Updated to allow only one origin)
 
 package handler
 
@@ -17,22 +17,34 @@ type DiscordWebhookPayload struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// --- NEW CODE BLOCK TO HANDLE CORS ---
-	// This allows the browser/fetch client to make a "preflight" OPTIONS request
-	// to see which methods and headers are allowed.
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	// --- NEW: Get allowed origin from environment variables ---
+	allowedOrigin := "https://tbilisi.hackclub.com/join"
+	if allowedOrigin == "" {
+		// This is a server configuration error, so we block the request.
+		log.Println("FATAL: ALLOWED_ORIGIN environment variable not set.")
+		http.Error(w, "Server configuration error", http.StatusInternalServerError)
+		return
+	}
+
+	// --- NEW: Check if the request's origin matches the allowed origin ---
+	requestOrigin := r.Header.Get("Origin")
+	if requestOrigin != allowedOrigin {
+		// If the origin does not match, block the request.
+		http.Error(w, "Forbidden: Invalid origin", http.StatusForbidden)
+		return
+	}
+
+	// --- UPDATED: Set CORS headers to be specific, not a wildcard ---
+	w.Header().Set("Access-Control-Allow-Origin", allowedOrigin) // Only allow YOUR site
 	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	// If this is the preflight OPTIONS request, we can stop here.
+
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	// --- END OF NEW CODE BLOCK ---
 
-
-	// We still only want to process POST requests for the actual logic.
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -41,7 +53,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	webhookURL := os.Getenv("DISCORD_WEBHOOK_URL")
 	if webhookURL == "" {
 		http.Error(w, "Server configuration error: DISCORD_WEBHOOK_URL not set", http.StatusInternalServerError)
-		log.Println("FATAL: DISCORD_WEBHOOK_URL environment variable not set.")
 		return
 	}
 
