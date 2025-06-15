@@ -18,7 +18,7 @@ type DiscordWebhookPayload struct {
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// --- NEW: Get allowed origin from environment variables ---
-	allowedOrigin := "https://tbilisi.hackclub.com/join"
+	allowedOrigin := "https://tbilisi.hackclub.com"
 	if allowedOrigin == "" {
 		// This is a server configuration error, so we block the request.
 		log.Println("FATAL: ALLOWED_ORIGIN environment variable not set.")
