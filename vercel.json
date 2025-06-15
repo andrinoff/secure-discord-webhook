@@ -1,13 +1,8 @@
 {
-  "functions": {
-    "api/webhook.go": {
-      "runtime": "@vercel/go"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "build": {
+    "env": {
+      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
     }
-  },
-  "routes": [
-    {
-      "src": "/api/webhook",
-      "dest": "/api/webhook.go"
-    }
-  ]
+  }
 }
