@@ -1,6 +1,4 @@
-// api/webhook.go (Updated to allow only one origin)
-
-package contact
+package handler
 
 import (
 	"bytes"
