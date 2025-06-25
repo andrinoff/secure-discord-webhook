@@ -1,6 +1,6 @@
 // api/webhook.go (Updated to allow only one origin)
 
-package handler
+package contact
 
 import (
 	"bytes"
@@ -49,7 +49,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	webhookURL := os.Getenv("DISCORD_WEBHOOK_URL")
+	webhookURL := os.Getenv("DISCORD_WEBHOOK_URL_2")
 	if webhookURL == "" {
 		http.Error(w, "Server configuration error: DISCORD_WEBHOOK_URL not set", http.StatusInternalServerError)
 		return
@@ -88,4 +88,3 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		"status": "success",
 	})
 }
-
