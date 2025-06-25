@@ -1,6 +1,4 @@
-// api/webhook.go (Updated to allow only one origin)
-
-package handler
+package webhook
 
 import (
 	"bytes"
@@ -88,4 +86,3 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		"status": "success",
 	})
 }
-
